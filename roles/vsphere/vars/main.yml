@@ -1,3 +1,3 @@
 vsphere_ip: 172.19.253.141
 vsphere_username: "root"
-
+vsphere_password: "Test_123"
