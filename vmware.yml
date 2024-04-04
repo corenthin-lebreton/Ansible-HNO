@@ -1,4 +1,0 @@
-- hosts: [hno:children:dev]
-  gather_facts: no
-  roles:
-    - vpshere
