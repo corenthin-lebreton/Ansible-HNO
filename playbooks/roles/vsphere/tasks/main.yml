@@ -1,0 +1,54 @@
+---
+- name: ip et nom de la VM
+  vars_prompt:
+  - name: name
+    prompt: entrez le nom de la VM
+    private: false
+
+  - name: ip
+    prompt: entrez l'ip de la nouvelle VM
+    private: false
+
+- name: creation de la VM
+  vmware.guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username}}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter: {{ datacenter }}
+    cluster: {{ cluster }}
+    folder:  /{{ datacenter }}/{{ datastore }}
+    name: "{{ name }}"
+    state: poweredon
+    esxi_hostname: {{ esxi_hostname }}
+    
+    hardware:
+      memory_mb: 2048
+      num_cpus: 2
+      scsi: paravirtual
+      boot_firmware: "efi"
+      hotadd_cpu: "{{ hot_add_cpu | default('True') }}"
+      hotremove_cpu: False
+      hotadd_memory: "{{ hot_add_memory | default('True') }}"
+      nested_virt: False
+
+    networks:
+      ip: {{ ip }}
+      netmask: 255.255.255.0
+      device_type: vmxnet3
+      dvswitch_name: SPG3416ADM-DEV-K8
+      start_connected: True
+      type: static
+
+    disk:
+    - size_gb: 30
+      type: thin
+      datastore: {{ datastore }}
+      disk_mode: persistent
+
+    cdrom:
+      type: iso
+      iso_path: " [{{ datastoreISO }}]  Rocky-9.3-x86_64-dvd.iso"
+    
+    wait_for_ip_address: no
+  delegate_to: localhost

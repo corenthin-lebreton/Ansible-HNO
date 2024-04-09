@@ -1,0 +1,4 @@
+- hosts: vcenter
+  gather_facts: no
+  roles:
+    - vsphere
